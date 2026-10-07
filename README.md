@@ -122,5 +122,3 @@ Tested on 7 October 2026 from a fresh copy (Linux, Python 3.13):
 - **Narration and `--check`:** the example script narrates and scores 0.87–0.89.
 - **Intelligibility:** a Whisper speech recogniser transcribes the output almost word for word (one slip: "reranker" heard as "reranger").
 - **Cache and `--only`:** a rerun reuses finished files, and `--only` regenerates just the item named.
-
-Not yet tested on macOS or Windows.
