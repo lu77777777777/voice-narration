@@ -1,0 +1,4 @@
+[
+ {"id": "intro", "text": "Hi everyone, and welcome back. Today we're looking at how RAG helps an LLM answer questions about your own documents."},
+ {"id": "detail", "text": "Hybrid search combines BM25 keyword matching with vector search, and a reranker keeps only the best results."}
+]

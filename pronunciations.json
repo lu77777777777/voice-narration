@@ -1,0 +1,113 @@
+{
+ "_note": "Ordered [regex, replacement] pairs applied to speaker notes before TTS. Longer terms first (LLMs before LLM, GraphRAG before RAG). Add new terms as you go.",
+ "rules": [
+  [
+   "\\[DRAFT TAKE[^\\]]*\\]\\s*",
+   ""
+  ],
+  [
+   "\\bLLMs\\b",
+   "L L Ms"
+  ],
+  [
+   "\\bLLM\\b",
+   "L L M"
+  ],
+  [
+   "\\bGraphRAG\\b",
+   "Graph RAG"
+  ],
+  [
+   "\\bSelf-RAG\\b",
+   "Self RAG"
+  ],
+  [
+   "\\bRAGAS\\b",
+   "Ragas"
+  ],
+  [
+   "\\bRAFT\\b",
+   "Raft"
+  ],
+  [
+   "\\bRAG\\b",
+   "rag"
+  ],
+  [
+   "\\bBM25\\b",
+   "B M twenty-five"
+  ],
+  [
+   "\\bDPR\\b",
+   "D P R"
+  ],
+  [
+   "\\bBART\\b",
+   "Bart"
+  ],
+  [
+   "\\bREALM\\b",
+   "Realm"
+  ],
+  [
+   "\\bRETRO\\b",
+   "Retro"
+  ],
+  [
+   "\\bHyDE\\b",
+   "Hyde"
+  ],
+  [
+   "\\bColPali\\b",
+   "Col Pali"
+  ],
+  [
+   "\\bSearch-R1\\b",
+   "Search R one"
+  ],
+  [
+   "\\bNeurIPS\\b",
+   "Neur I P S"
+  ],
+  [
+   "\\bUCL\\b",
+   "U C L"
+  ],
+  [
+   "\\bNYU\\b",
+   "N Y U"
+  ],
+  [
+   "\\bAI\\b",
+   "A I"
+  ],
+  [
+   "\\bPDFs\\b",
+   "P D Fs"
+  ],
+  [
+   "\\bPDF\\b",
+   "P D F"
+  ],
+  [
+   "\\bSQL\\b",
+   "sequel"
+  ],
+  [
+   "\\bQ2\\b",
+   "Q two"
+  ],
+  [
+   "\\bRSI\\b",
+   "R S I"
+  ],
+  [
+   "\\bAPI\\b",
+   "A P I"
+  ],
+  [
+   "\\bGPU\\b",
+   "G P U"
+  ]
+ ]
+}

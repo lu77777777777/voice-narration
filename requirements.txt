@@ -1,0 +1,7 @@
+# Core packages for narration. setup.sh installs these into ./.venv.
+# For a GPU or a smaller CPU-only download, install torch/torchaudio first from https://pytorch.org
+torch>=2.2
+torchaudio>=2.2
+numpy
+soundfile
+kokoro-onnx>=0.4

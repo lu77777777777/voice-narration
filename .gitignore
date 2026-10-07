@@ -1,0 +1,12 @@
+# Environment and downloads (setup.sh recreates these)
+.venv/
+models/
+third_party/
+__pycache__/
+
+# Outputs
+narration/
+
+# Your voice: never commit recordings or the profile built from them
+voice_profile/*
+!voice_profile/README.md

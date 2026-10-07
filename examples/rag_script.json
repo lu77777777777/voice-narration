@@ -1,0 +1,86 @@
+[
+ {
+  "id": "cover",
+  "text": "Hi everyone, I'm Lu, and this is Lu Explains Tech. Today: rag, retrieval-augmented generation. It's the reason a chatbot can answer questions about your company's documents, and it sits behind most of the A I assistant products you've seen in the last couple of years. By the end of this video you'll know what rag is, how it works under the hood, how people make it actually good, and where it's heading."
+ },
+ {
+  "id": "hook",
+  "text": "Let's start with the problem. Ask a regular chatbot about your company's parental leave policy. It will happily give you an answer, sounding completely sure, and it's invented. Why? Three reasons. First, its knowledge is frozen at a training cutoff. Second, it never saw your private documents. Third, it's built to produce fluent text, so when it doesn't know, it fills the gap with something plausible. That's what people call hallucination. rag is the most common fix."
+ },
+ {
+  "id": "openbook",
+  "text": "Here's the simplest way to think about rag. A plain language model is a student sitting a closed-book exam: everything has to come from memory, and that memory stopped updating on the day training ended. rag turns it into an open-book exam. Before answering, the model looks up the relevant pages, reads them, and answers from what it found, and it can tell you which page it used. The key insight: the model doesn't need to memorise everything. It needs to find the right page."
+ },
+ {
+  "id": "ragdef",
+  "text": "The name says exactly what happens. Retrieve: search your documents for the passages most related to the question. Think of a librarian. Augment: put those passages into the prompt, right next to the question. That's the open book. Generate: the language model writes the answer using that evidence. That's the writer. Three steps, every single time someone asks a question."
+ },
+ {
+  "id": "pipeline",
+  "text": "In practice there are two phases. Before anyone asks anything, we prepare the library: collect the documents, split them into small chunks, and turn each chunk into a vector, which is just a list of numbers, stored in a vector database. That's done once and refreshed when documents change. Then, at question time: someone asks, we search that index for the closest chunks, put the question and the chunks together into one prompt, and the model generates an answer with its sources."
+ },
+ {
+  "id": "embeddings",
+  "text": "So what does closest actually mean? An embedding model turns a piece of text into a list of numbers, which you can picture as a point on a map of meaning. Texts that mean similar things land near each other, even if they share no words. 'Why won't my cat eat?' sits right next to 'cat stopped eating' and 'kitten refusing food', and far away from 'invoice overdue' or 'flight delayed'. Retrieval is simply finding the points nearest to your question. (Real embeddings have hundreds or thousands of dimensions, not two, but the idea is the same.)"
+ },
+ {
+  "id": "origin",
+  "text": "The name comes from a 2020 paper by Patrick Lewis and colleagues at Facebook A I Research, U C L and N Y U, presented at Neur I P S. The idea: give a model two kinds of memory. What it learned in training, plus an index of Wikipedia it can search. A retriever called D P R finds relevant passages, and a generator called Bart writes the answer from them. And my favourite part: if you swap the index, you update the model's knowledge without retraining it. That's still the core promise of rag today."
+ },
+ {
+  "id": "failures",
+  "text": "Building a rag demo takes an afternoon. Making it reliable is the hard part. Answers go wrong in four places. Indexing: chunks get cut mid-thought, tables and scanned pages get garbled. Retrieval: the right passage is never found because the question uses different words from the document. Ranking: the passage is found but buried; the 'Lost in the Middle' paper showed models pay less attention to information in the middle of long prompts. And generation: the model ignores the evidence, or guesses. Notice that three of the four happen before the model writes a single word."
+ },
+ {
+  "id": "take-eval",
+  "text": "Here's my personal take, and it comes from how I work day to day: evaluation first. Before you tune anything, build a small test set: a few dozen real questions with known answers. Then measure the two halves separately. Did retrieval find the right chunk? Did the model actually use it? Did it answer the question? If you only look at final answers, you can't tell which half is broken, and you end up tweaking prompts when the real problem is search. Open-source tools like Ragas can automate a lot of this scoring."
+ },
+ {
+  "id": "opt-index",
+  "text": "Optimization, part one: the library. Chunk by meaning, not by a fixed length: split on headings and sections so each chunk is one complete idea. Give every chunk its context: a chunk that just says 'revenue grew 3%' is useless on its own, but 'ACME's Q two 2023 report: revenue grew 3%' is findable. That example comes from Anthropic's Contextual Retrieval post. Tag chunks with metadata like date, source and who's allowed to see them, so you can filter before you search. And parse documents properly: a garbled P D F can't be rescued later in the pipeline."
+ },
+ {
+  "id": "opt-search",
+  "text": "Part two: the search itself. Think of it as a funnel. First, rewrite the question into sharper searches. One neat trick, Hyde, has the model write a hypothetical answer and then searches with that, because a fake answer often looks more like the real document than the question does. Then hybrid search: old-school keyword matching catches exact names and product codes, vectors catch meaning, and you merge both lists. Then a reranker, a slower and smarter model that reads the question and each candidate together, keeps only the best few. The numbers here are typical settings, not rules. The L L M ends up seeing only the strongest evidence."
+ },
+ {
+  "id": "opt-answer",
+  "text": "Part three: make the model actually use the evidence. Order matters: put the strongest chunks where they get read, at the start or the end of the context. Ask for citations, so every claim can be checked. Explicitly allow 'I don't know', otherwise the model will guess. And less is more: trimming the context cuts noise, cost and latency."
+ },
+ {
+  "id": "bignum",
+  "text": "How much do these tricks matter? Anthropic published a post in September 2024 called Introducing Contextual Retrieval. Adding a short context note to each chunk before indexing it, for both vector search and keyword search, cut failed retrievals by 49 percent in their tests: from 5.7 percent to 2.9 percent of questions where the right chunk wasn't in the top 20. Adding a reranker on top took the reduction to 67 percent. Same model, same documents; just better retrieval."
+ },
+ {
+  "id": "take-stack",
+  "text": "So what's my default stack? Honestly, boring basics. A golden test set first. Structure-aware chunking with metadata. Hybrid search plus a reranker. Citations, and permission to say 'I don't know'. Only after all of that do I reach for Graph rag, agents or fine-tuning. My background is in ranking systems for industry, and in my experience the reranker is very often the cheapest big win."
+ },
+ {
+  "id": "timeline",
+  "text": "Let's zoom out and see how rag grew up. 2020: the rag paper names the idea, alongside neural retrievers like D P R and Realm. 2021: DeepMind's Retro shows retrieval at trillion-token scale, and Fusion-in-Decoder reads many passages at once. 2022: ChatGPT launches and suddenly everyone wants it on their own data; Hyde shows you can search with a guessed answer. 2023: vector databases boom, Self rag lets the model decide when to retrieve, and 'Lost in the Middle' warns us about long prompts. 2024: Graph rag, Corrective rag, Contextual Retrieval, and million-token context windows spark the 'is rag dead?' debate. 2025: agentic rag, deep-research agents, search trained with reinforcement learning, and a new name for the whole craft: context engineering."
+ },
+ {
+  "id": "generations",
+  "text": "A widely cited survey by Gao and colleagues describes how rag evolved in stages. Naive rag: retrieve once, paste, answer. Simple, but brittle. Advanced rag adds steps before and after the search: query rewriting, hybrid search, reranking. Then modular rag breaks the pipeline into swappable parts, which leads to today's frontier, agentic rag, where the model plans its own searches, checks the results, and tries again. More capable, but slower, more expensive and harder to evaluate."
+ },
+ {
+  "id": "agentic",
+  "text": "Here's what agentic rag looks like. A question comes in, often with several parts. The model plans: it breaks the question into sub-questions. It searches, maybe your documents, maybe the web, maybe a database. It reads and checks: is this enough, and is it trustworthy? If not, it searches again. Only when it has enough evidence does it answer, with citations. This loop is what's behind deep-research tools, and behind coding assistants that explore a codebase before changing it."
+ },
+ {
+  "id": "take-longctx",
+  "text": "Every time context windows grow, someone says rag is dead. My take: long context changes rag's job; it doesn't kill it. Re-reading a whole library for every question is slow and expensive. Retrieval is also where you enforce freshness and permissions; in regulated industries like banking or healthcare, which documents a given person is allowed to see really matters. And even huge prompts still lose details in the middle. My bet is that retrieval becomes one tool inside context engineering: the craft of deciding what the model gets to see."
+ },
+ {
+  "id": "next",
+  "text": "So where is rag heading? The nice part: every direction upgrades a step of the same pipeline you just learned. Indexing: Graph rag, from Microsoft, builds a graph of entities and the links between them, so the system can answer questions that span many documents, not just what a single chunk says. Retrieval: multimodal rag, like Col Pali, retrieves whole pages as images, so charts, tables and scanned P D Fs finally count as evidence. Deciding: instead of hand-writing rules for an agent, Search R one trains the model with reinforcement learning to decide when to retrieve and what to search for. And generation: Raft fine-tunes the model specifically to answer from retrieved documents, cite the right one, and ignore the distracting ones. Same pipeline, smarter steps."
+ },
+ {
+  "id": "recap",
+  "text": "Quick recap. One: rag means look it up, then answer; the model gets an open book. Two: most of the quality lives in retrieval, in chunking, hybrid search and reranking, and you only know it's working if you measure it on real questions. Three: rag isn't dying; it's evolving into agents and context engineering."
+ },
+ {
+  "id": "outro",
+  "text": "That's rag! If this helped, subscribe, and tell me in the comments which part you'd like a deep dive on: chunking, reranking, evaluation, or agentic rag. See you next time."
+ }
+]
