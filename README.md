@@ -2,8 +2,6 @@
 
 Turn a written script into narration **in your own voice**, from a few minutes of your recorded speech. It's open source and runs locally.
 
-I built this for the narration of my YouTube channel.
-
 ```
 script.json ──► Kokoro-82M ──► generic voice ──► kNN-VC ──► narration in your voice
                 (text-to-speech)                 (voice conversion,
